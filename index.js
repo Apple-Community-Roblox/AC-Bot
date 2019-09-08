@@ -1,16 +1,16 @@
+const Discord = require('discord.js');
+const hook = new Discord.WebhookClient('620389825656258601', 'XA3A2llD89lp_m4WdKMX6MYkMaoimMEZKtiItEM7EltdKizkM8dnW53ra6w1X7VmE2X4');
 const client = new Discord.Client();
       client.on('ready', () => {
         console.log('[CLIENT] Ready!');
+        hook.send('I have started up!');
       });
       client.on('debug', console.log);
       client.on('error', console.error);
-      client.ws.on('close', (event) => console.log('[CLIENT] Disconnect!', event));
-      client.on('message', (message) => {
-        
-      });
       client.on('guildMemberAdd', member => {
   // Send the message to a designated channel on a server:
       const channel = member.guild.channels.find(ch => ch.name === 'welcome-and-system-message');
+      hook.send(`${member} has joined the server :D`);
   // Do nothing if the channel wasn't found on this server
       if (!channel) return;
   // Send the message, mentioning the member
@@ -20,6 +20,7 @@ const client = new Discord.Client();
       client.on('guildMemberRemove', member => {
   // Send the message to a designated channel on a server:
       const channel = member.guild.channels.find(ch => ch.name === 'welcome-and-system-message');
+      hook.send(`${member} has left the server :C`);
   // Do nothing if the channel wasn't found on this server
       if (!channel) return;
   // Send the message, mentioning the member
@@ -47,6 +48,7 @@ client.on('message', message => {
          */
         member.kick('Optional reason that will display in the audit logs').then(() => {
           // We let the message author know we were able to kick the person
+          hook.send(`${message.author} has kicked ${user.tag} from the server :O`)
           message.reply(`Successfully kicked ${user.tag}`);
         }).catch(err => {
           // An error happened
@@ -93,6 +95,7 @@ client.on('message', message => {
           reason: 'They were bad!',
         }).then(() => {
           // We let the message author know we were able to ban the person
+          hook.send(`${message.author} has banned ${user.tag} from the server :O`)
           message.reply(`Successfully banned ${user.tag}`);
         }).catch(err => {
           // An error happened
@@ -110,6 +113,12 @@ client.on('message', message => {
     // Otherwise, if no user was mentioned
       message.reply('You didn\'t mention the user to ban!');
     }
+  }
+});
+
+client.on('message', msg => {
+  if (msg.content === 'ping') {
+    msg.reply('Pong!');
   }
 });
       
