@@ -3,17 +3,12 @@ const hook = new Discord.WebhookClient('620389825656258601', 'XA3A2llD89lp_m4WdK
 const client = new Discord.Client();
 const bot = new Discord.Client();
       client.on('ready', () => {
-        bot.user.setPresence({
-            game: {
-                name: 'to ?beep etc. | Apple Community',
-                type: "Listening",
-            }
-        });
-        console.log('[CLIENT] Ready!');
-        hook.send('I have started up!');
+        client.user.setActivity('to ?beep | Apple Community', { type: 'LISTENING' })
+        .then(presence => console.log(`Activity set to ${presence.game ? presence.game.name : 'none'}`))
+        .catch(console.error);
+        client.on('debug', console.log);
+        client.on('error', console.error);
       });
-      client.on('debug', console.log);
-      client.on('error', console.error);
       client.on('guildMemberAdd', member => {
   // Send the message to a designated channel on a server:
       const channel = member.guild.channels.find(ch => ch.name === 'welcome-and-system-message');
@@ -134,6 +129,23 @@ client.on('message', msg => {
     message.channel.send(`Server name: ${message.guild.name}\nTotal members: ${message.guild.memberCount}`);
   } else if (message.content === `?user-info`) {
     message.channel.send(`Your username: ${message.author.username}\nYour ID: ${message.author.id}`);
+  } else if (message.content === `?md1`) {
+    channel.bulkDelete(1)
+    .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
+    .catch(console.error);
+  } else if (message.content === `?md2`) {
+    channel.bulkDelete2
+    .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
+    .catch(console.error);
+  } else if (message.content === `?md1000`) {
+    channel.bulkDelete(1000)
+    .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
+    .catch(console.error);
+  } else if (message.content === `?invite`) {
+    // Create an invite to a channel
+    channel.createInvite()
+    .then(invite => message.reply(`Created an invite with a code of ${invite.code}`))
+    .catch(console.error);
   }
 });
       
