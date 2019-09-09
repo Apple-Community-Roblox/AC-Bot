@@ -1,6 +1,7 @@
 const Discord = require('discord.js');
 const hook = new Discord.WebhookClient('620389825656258601', 'XA3A2llD89lp_m4WdKMX6MYkMaoimMEZKtiItEM7EltdKizkM8dnW53ra6w1X7VmE2X4');
 const client = new Discord.Client();
+const bot = new Discord.Client();
       client.on('ready', () => {
         bot.user.setStatus('available')
         bot.user.setPresence({
