@@ -3,7 +3,6 @@ const hook = new Discord.WebhookClient('620389825656258601', 'XA3A2llD89lp_m4WdK
 const client = new Discord.Client();
 const bot = new Discord.Client();
       client.on('ready', () => {
-        bot.user.setStatus('available')
         bot.user.setPresence({
             game: {
                 name: 'to ?beep etc. | Apple Community',
