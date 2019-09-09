@@ -1,8 +1,7 @@
 const Discord = require('discord.js');
 const hook = new Discord.WebhookClient('620389825656258601', 'XA3A2llD89lp_m4WdKMX6MYkMaoimMEZKtiItEM7EltdKizkM8dnW53ra6w1X7VmE2X4');
 const client = new Discord.Client();
-const bot = new Discord.Client();
-const message = msg;
+const bot = new Discord.Client()
       client.on('ready', () => {
         client.user.setActivity('?beep | Apple Community', { type: 'PLAYING' })
         .then(presence => console.log(`Activity set to ${presence.game ? presence.game.name : 'none'}`))
@@ -125,28 +124,46 @@ client.on('message', msg => {
   } else if (msg.content === '?beep') {
     msg.reply('Boop')
   } else if (msg.content === '?hello'){
-    msg.reply(`Hi, ${message.author}`)
+    msg.reply(`Hi, ${msg.author}`)
   } else if (msg.content === `?server`) {
-    message.channel.send(`Server name: ${message.guild.name}\nTotal members: ${message.guild.memberCount}`);
+    msg.channel.send(`Server name: ${msg.guild.name}\nTotal members: ${msg.guild.memberCount}`);
   } else if (msg.content === `?user-info`) {
-    message.channel.send(`Your username: ${message.author.username}\nYour ID: ${message.author.id}`);
+    msg.channel.send(`Your username: ${msg.author.username}\nYour ID: ${msg.author.id}`);
   } else if (msg.content === `?md1`) {
     channel.bulkDelete(1)
-    .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
+    .then(messages => msg.reply(`Bulk deleted ${messages.size} messages`))
     .catch(console.error);
   } else if (msg.content === `?md2`) {
     channel.bulkDelete2
-    .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
+    .then(messages => msg.reply(`Bulk deleted ${messages.size} messages`))
     .catch(console.error);
   } else if (msg.content === `?md1000`) {
     channel.bulkDelete(1000)
-    .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
+    .then(messages => msg.reply(`Bulk deleted ${messages.size} messages`))
     .catch(console.error);
   } else if (msg.content === `?invite`) {
     // Create an invite to a channel
     channel.createInvite()
-    .then(invite => message.reply(`Created an invite with a code of ${invite.code}`))
+    .then(invite => msg.reply(`Created an invite with a code of ${invite.code}`))
     .catch(console.error);
+  } else if (msg.content === `?test`) {
+    msg.reply('Test, test, 1, 2, 3')
+  }
+});
+
+client.on('message', msg => {
+  if (msg.content === `?rp`) {
+    const channel = member.guild.channels.find(ch => ch.name === 'annoucments');
+    if (!channel) return;
+    channel.send(`${everyone} **ITS RP TIME!**/n/nHead on down to the store so we can start the rp!`)
+  }
+});
+ 
+client.on('message', msg => {
+  if (msg.content === `?mandatoryrp`) {
+    const channel = member.guild.channels.find(ch => ch.name === 'annoucments');
+    if (!channel) return;
+    channel.send(`${everyone} **MANDATORY RP!**/n/nHead on down to the store right now! Not joining could lead to demotion.`)
   }
 });
       
