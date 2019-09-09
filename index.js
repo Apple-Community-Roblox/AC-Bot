@@ -3,7 +3,7 @@ const hook = new Discord.WebhookClient('620389825656258601', 'XA3A2llD89lp_m4WdK
 const client = new Discord.Client();
 const bot = new Discord.Client();
       client.on('ready', () => {
-        client.user.setActivity('to ?beep | Apple Community', { type: 'LISTENING' })
+        client.user.setActivity('?beep | Apple Community', { type: 'LISTENING' })
         .then(presence => console.log(`Activity set to ${presence.game ? presence.game.name : 'none'}`))
         .catch(console.error);
         client.on('debug', console.log);
