@@ -153,7 +153,7 @@ client.on('message', msg => {
 
 client.on('message', msg => {
   if (msg.content === `?rp`) {
-    const channel = member.guild.channels.find(ch => ch.name === 'annoucments');
+    const channel = msg.guild.channels.find(ch => ch.name === 'annoucments');
     if (!channel) return;
     channel.send(`${everyone} **ITS RP TIME!**/n/nHead on down to the store so we can start the rp!`)
   }
@@ -161,7 +161,7 @@ client.on('message', msg => {
  
 client.on('message', msg => {
   if (msg.content === `?mandatoryrp`) {
-    const channel = member.guild.channels.find(ch => ch.name === 'annoucments');
+    const channel = msg.guild.channels.find(ch => ch.name === 'annoucments');
     if (!channel) return;
     channel.send(`${everyone} **MANDATORY RP!**/n/nHead on down to the store right now! Not joining could lead to demotion.`)
   }
