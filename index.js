@@ -3,7 +3,7 @@ const hook = new Discord.WebhookClient('620389825656258601', 'XA3A2llD89lp_m4WdK
 const client = new Discord.Client();
 const bot = new Discord.Client();
       client.on('ready', () => {
-        client.user.setActivity('?beep | Apple Community', { type: 'LISTENING' })
+        client.user.setActivity('?beep | Apple Community', { type: 'PLAYING' })
         .then(presence => console.log(`Activity set to ${presence.game ? presence.game.name : 'none'}`))
         .catch(console.error);
         client.on('debug', console.log);
@@ -125,23 +125,23 @@ client.on('message', msg => {
     msg.reply('Boop')
   } else if (msg.content === '?hello'){
     msg.reply(`Hi, ${message.author}`)
-  } else if (message.content === `?server`) {
+  } else if (msg.content === `?server`) {
     message.channel.send(`Server name: ${message.guild.name}\nTotal members: ${message.guild.memberCount}`);
-  } else if (message.content === `?user-info`) {
+  } else if (msg.content === `?user-info`) {
     message.channel.send(`Your username: ${message.author.username}\nYour ID: ${message.author.id}`);
-  } else if (message.content === `?md1`) {
+  } else if (msg.content === `?md1`) {
     channel.bulkDelete(1)
     .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
     .catch(console.error);
-  } else if (message.content === `?md2`) {
+  } else if (msg.content === `?md2`) {
     channel.bulkDelete2
     .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
     .catch(console.error);
-  } else if (message.content === `?md1000`) {
+  } else if (msg.content === `?md1000`) {
     channel.bulkDelete(1000)
     .then(messages => console.log(`Bulk deleted ${messages.size} messages`))
     .catch(console.error);
-  } else if (message.content === `?invite`) {
+  } else if (msg.content === `?invite`) {
     // Create an invite to a channel
     channel.createInvite()
     .then(invite => message.reply(`Created an invite with a code of ${invite.code}`))
