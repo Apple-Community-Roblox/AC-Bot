@@ -2,6 +2,13 @@ const Discord = require('discord.js');
 const hook = new Discord.WebhookClient('620389825656258601', 'XA3A2llD89lp_m4WdKMX6MYkMaoimMEZKtiItEM7EltdKizkM8dnW53ra6w1X7VmE2X4');
 const client = new Discord.Client();
       client.on('ready', () => {
+        bot.user.setStatus('available')
+        bot.user.setPresence({
+            game: {
+                name: 'to ?beep etc. | Apple Community',
+                type: "Listening",
+            }
+        });
         console.log('[CLIENT] Ready!');
         hook.send('I have started up!');
       });
@@ -31,7 +38,7 @@ client.on('message', message => {
   if (!message.guild) return;
 
   // If the message content starts with "!kick"
-  if (message.content.startsWith('!kick')) {
+  if (message.content.startsWith('?kick')) {
     // Assuming we mention someone in the message, this will return the user
     // Read more about mentions over at https://discord.js.org/#/docs/main/stable/class/MessageMentions
     const user = message.mentions.users.first();
@@ -74,7 +81,7 @@ client.on('message', message => {
   if (!message.guild) return;
 
   // if the message content starts with "!ban"
-  if (message.content.startsWith('!ban')) {
+  if (message.content.startsWith('?ban')) {
     // Assuming we mention someone in the message, this will return the user
     // Read more about mentions over at https://discord.js.org/#/docs/main/stable/class/MessageMentions
     const user = message.mentions.users.first();
@@ -117,8 +124,16 @@ client.on('message', message => {
 });
 
 client.on('message', msg => {
-  if (msg.content === 'ping') {
+  if (msg.content === '?ping') {
     msg.reply('Pong!');
+  } else if (msg.content === '?beep') {
+    msg.reply('Boop')
+  } else if (msg.content === '?hello'){
+    msg.reply(`Hi, ${message.author}`)
+  } else if (message.content === `?server`) {
+    message.channel.send(`Server name: ${message.guild.name}\nTotal members: ${message.guild.memberCount}`);
+  } else if (message.content === `?user-info`) {
+    message.channel.send(`Your username: ${message.author.username}\nYour ID: ${message.author.id}`);
   }
 });
       
