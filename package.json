@@ -1,7 +1,57 @@
 {
     "name": "acbot",
     "description": "AC Discord Bot",
+    "license": "MIT",
+    "author": {
+        "name": "joshuadl12",
+        "email": "joshuadeleon210@gmail.com",
+        "url": "https://applecommunity.tk"
+    },
+    "main": "index.js",
+    "contributors": [
+        "0_Braden",
+        "joshuadl12",
+        "AC Dev Team"
+    ],
+    "bugs": {
+        "email": "joshuadeleon210@gmail.com",
+        "url": "https://github.com/joshuadl12/AC-Bot/issues"
+    },
+    "homepage": "https://github.com/joshuadl12/AC-Bot",
+    "displayName": "Apple Community Bot",
+    "maintainers": [
+        "joshuadl12",
+        "0_Braden"
+    ],
+    "version": "1.1.0",
+    "readme": "README.md",
+    "markdown": "github",
+    "files": [
+        "index.js",
+        "Procfile",
+        "package.json",
+        "node_modules/",
+        "package-lock.json"
+    ],
+    "repository": {
+        "type": "Code",
+        "directory": "master",
+        "url": "https://github.com/joshuadl12/AC-Bot"
+    },
+    "workspaces": "node-js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "start": "node .",
+        "restart": "node .",
+        "lint": "eslint ."
+    },
+    "devDependencies": {},
+    "optionalDependencies": {},
+    "peerDependencies": {},
     "dependencies": {
-        "discord.js": "^11.5.1"
+        "discord.js": "^11.5.1",
+        "enmap": "^5.1.2",
+        "ffmpeg-static": "^2.6.0",
+        "fs": "0.0.1-security"
     }
 }
