@@ -1,3 +1,7 @@
-export function run(client, message, args) {
-    message.channel.send("Boop!").catch(console.error);
-}
+module.exports = {
+	name: 'beep',
+	description: 'Beep!',
+	execute(message, args) {
+		message.channel.send('Boop');
+	},
+};

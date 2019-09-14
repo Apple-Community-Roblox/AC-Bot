@@ -1,10 +1,19 @@
 const Discord = require('discord.js');
 const hook = new Discord.WebhookClient('620389825656258601', 'XA3A2llD89lp_m4WdKMX6MYkMaoimMEZKtiItEM7EltdKizkM8dnW53ra6w1X7VmE2X4');
 const client = new Discord.Client();
-const Enmap = require("enmap");
-const fs = require("fs");
-const config = require("./config.json");
-const bot = new Discord.Client()
+const fs = require('fs');
+const Discord = require('discord.js');
+const { prefix, token } = require('./config.json');
+
+const client = new Discord.Client();
+client.commands = new Discord.Collection();
+
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+	const command = require(`./commands/${file}`);
+	client.commands.set(command.name, command);
+}
       client.on('ready', () => {
         client.user.setActivity('?beep | Apple Community', { type: 'PLAYING' })
         .then(presence => console.log(`Activity set to ${presence.game ? presence.game.name : 'none'}`))
