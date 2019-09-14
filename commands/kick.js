@@ -1,4 +1,7 @@
-export function run(client, message, [mention, ...reason]) {
+module.exports = {
+  name: 'kick',
+  description: 'Kicks a user',
+  execute(client,message, args) {
     const modRole = message.guild.roles.find(role => role.name === "AC Mods");
     if (!modRole)
       return console.log("The AC Mods role does not exist");
@@ -17,5 +20,5 @@ export function run(client, message, [mention, ...reason]) {
     kickMember.kick(reason.join(" ")).then(member => {
       message.reply(`${member.user.username} was succesfully kicked.`);
     });
-  }
-  
+  },
+};
