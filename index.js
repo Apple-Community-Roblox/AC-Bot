@@ -12,7 +12,7 @@ const config = require("./config.json");
 // config.prefix contains the message prefix.
 
 // Load are webhook
-const hook = new Discord.WebhookClient('webhook id', 'webhook token');
+const hook = new Discord.WebhookClient('620389825656258601', 'XA3A2llD89lp_m4WdKMX6MYkMaoimMEZKtiItEM7EltdKizkM8dnW53ra6w1X7VmE2X4');
 
 client.on("ready", () => {
   // This event will run if the bot starts, and logs in, successfully.
