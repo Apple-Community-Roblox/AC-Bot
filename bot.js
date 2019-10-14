@@ -89,7 +89,11 @@ client.music.start(client, {
 client.on('message', async (message) => {
   if(message.author.bot) return;
 
-  if (message.content === "{prefix}ban") {
+  if (message.content === "?group") {
+    message.channel.send('Here is the group: https://web.roblox.com/groups/4158226/Apple-Community/')
+  }
+
+  if (message.content === "?ban") {
     if (member.roles.some(role => role.name === 'AC Admins')) {
       let member = message.mentions.members.first();
       if(!member)
@@ -106,7 +110,7 @@ client.on('message', async (message) => {
     } else {
       return message.channel.send("Oops! You don't have the correct roles to run the command.")
     }
-  } else if (message.content === "{prefix}kick") {
+  } else if (message.content === "?kick") {
     if (member.roles.some(role => role.name === 'AC Mods', 'AC Admins')) {
       let member = message.mentions.members.first();
       if(!member)
@@ -123,14 +127,14 @@ client.on('message', async (message) => {
     } else {
       return message.channel.send("Oops! You don't have the correct roles to run the command.")
     }
-  } else if (message.content === "{prefix}ping") {
+  } else if (message.content === "?ping") {
     try {
       const msg = await message.channel.send("🏓 Ping!");
-      msg.edit(`🏓 Pong! (Roundtrip took: ${msg.createdTimestamp - message.createdTimestamp}ms. 💙: ${Math.round(this.client.ping)}ms.)`);
+      msg.edit(`🏓 Pong! (Roundtrip took: ${msg.createdTimestamp - message.createdTimestamp}ms. 💙: ${Math.round(client.ping)}ms.)`);
     } catch (e) {
       console.log(e);
     }
-  } else if (message.content === "{prefix}weather") {
+  } else if (message.content === "?weather") {
     weather.find({ search: args.join(" "), degreeType: "F" }, function(
       err,
       result
@@ -153,7 +157,7 @@ client.on('message', async (message) => {
         .addField("Humidity", `${current.humidity}%`, true);
       message.channel.send(weatherEmbed);
     });
-  } else if (message.content === "{prefix}stats") {
+  } else if (message.content === "?stats") {
     // eslint-disable-line no-unused-vars
     const duration = moment
       .duration(this.client.uptime)
