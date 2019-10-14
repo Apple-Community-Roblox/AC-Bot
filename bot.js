@@ -3,7 +3,6 @@ const client = new Discord.Client();
 const weather = require('weather-js');
 const config = require('./config.json');
 let prefix = config.prefix;
-const annoucments = message.guild.channels.find(`name`, "annoucments");
 
 client.on('ready', () => {
   client.user.setActivity(`?help | ${client.guilds.size} Servers | Apple Community`);
@@ -88,6 +87,7 @@ client.music.start(client, {
 });
 
 client.on('message', async (message) => {
+  const annoucments = message.guild.channels.find(`name`, "annoucments");
   if(message.author.bot) return;
 
   if (message.content === "?group") {
@@ -204,7 +204,7 @@ client.on('message', async (message) => {
     } else {
       message.reply('Oops! Incorrect permissions');
     }
-  } else if (message.content === "?mandatoryrp") {
+  } else if (message.content === "?meeting") {
     if (member.roles.some(role => role.name === 'AC Mods', 'AC Admins')) {
       annoucments.send('@everyone ATTENTION! MANDATORY RP! Head on down to the store right now')
     } else {
