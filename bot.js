@@ -205,7 +205,7 @@ client.on('message', async (message) => {
         message.reply('Oops! Incorrect permissions');
       }
     }
-  }
+  )};
 });
 
 client.login(process.env.token)
