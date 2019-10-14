@@ -3,6 +3,7 @@ const client = new Discord.Client();
 const weather = require('weather-js');
 const config = require('./config.json');
 let prefix = config.prefix;
+const annoucments = message.guild.channels.find(`name`, "annoucments");
 
 client.on('ready', () => {
   client.user.setActivity(`?help | ${client.guilds.size} Servers | Apple Community`);
@@ -174,53 +175,66 @@ client.on('message', async (message) => {
       { code: "asciidoc" }
     );
   } else if (message.content === "?warn") {
-        //!warn @daeshan <reason>
-  if(!message.member.hasPermission("MANAGE_MEMBERS")) return message.reply("No can do pal!");
-  let wUser = message.guild.member(message.mentions.users.first()) || message.guild.members.get(args[0])
-  if(!wUser) return message.reply("Couldn't find them yo");
-  if(wUser.hasPermission("MANAGE_MESSAGES")) return message.reply("They waaaay too kewl");
-  let reason = args.join(" ").slice(22);
+      //!warn @daeshan <reason>
+      if(!message.member.hasPermission("MANAGE_MEMBERS")) return message.reply("No can do pal!");
+      let wUser = message.guild.member(message.mentions.users.first()) || message.guild.members.get(args[0])
+      if(!wUser) return message.reply("Couldn't find them yo");
+      if(wUser.hasPermission("MANAGE_MESSAGES")) return message.reply("They waaaay too kewl");
+      let reason = args.join(" ").slice(22);
 
-  if(!warns[wUser.id]) warns[wUser.id] = {
-    warns: 0
-  };
+      if(!warns[wUser.id]) warns[wUser.id] = {
+        warns: 0
+      };
 
-  warns[wUser.id].warns++;
+      warns[wUser.id].warns++;
 
-  fs.writeFile("./warnings.json", JSON.stringify(warns), (err) => {
-    if (err) console.log(err)
-  });
+    fs.writeFile("./warnings.json", JSON.stringify(warns), (err) => {
+      if (err) console.log(err)
+    });
 
-  let warnEmbed = new Discord.RichEmbed()
-  .setDescription("Warns")
-  .setAuthor(message.author.username)
-  .setColor("#fc6400")
-  .addField("Warned User", `<@${wUser.id}>`)
-  .addField("Warned In", message.channel)
-  .addField("Number of Warnings", warns[wUser.id].warns)
-  .addField("Reason", reason);
+    let warnEmbed = new Discord.RichEmbed()
+      .setDescription("Warns")
+      .setAuthor(message.author.username)
+      .setColor("#fc6400")
+      .addField("Warned User", `<@${wUser.id}>`)
+      .addField("Warned In", message.channel)
+      .addField("Number of Warnings", warns[wUser.id].warns)
+      .addField("Reason", reason);
 
-  let warnchannel = message.guild.channels.find(`name`, "logs");
-  if(!warnchannel) return message.reply("Couldn't find channel");
+    let warnchannel = message.guild.channels.find(`name`, "logs");
+    if(!warnchannel) return message.reply("Couldn't find channel");
 
-  warnchannel.send(warnEmbed);
+    warnchannel.send(warnEmbed);
 
-  if(warns[wUser.id].warns == 2){
-    let muterole = message.guild.roles.find(`name`, "muted");
-    if(!muterole) return message.reply("You should create that role dude.");
+    if(warns[wUser.id].warns == 2){
+      let muterole = message.guild.roles.find(`name`, "muted");
+      if(!muterole) return message.reply("You should create that role dude.");
 
-    let mutetime = "10s";
-    await(wUser.addRole(muterole.id));
-    message.channel.send(`<@${wUser.id}> has been temporarily muted`);
+      let mutetime = "10s";
+      await(wUser.addRole(muterole.id));
+      message.channel.send(`<@${wUser.id}> has been temporarily muted`);
 
-    setTimeout(function(){
-      wUser.removeRole(muterole.id)
-      message.reply(`<@${wUser.id}> has been unmuted.`)
-    }, ms(mutetime))
-  }
-  if(warns[wUser.id].warns == 3){
-    message.guild.member(wUser).ban(reason);
-    message.reply(`<@${wUser.id}> has been banned.`)
+      setTimeout(function(){
+        wUser.removeRole(muterole.id)
+        message.reply(`<@${wUser.id}> has been unmuted.`)
+      }, ms(mutetime))
+    }
+    if(warns[wUser.id].warns == 3){
+      message.guild.member(wUser).ban(reason);
+      message.reply(`<@${wUser.id}> has been banned.`)
+    }
+  } else if (message.content === "?rp") {
+    if (member.roles.some(role => role.name === 'AC Mods', 'AC Admins')) {
+      annoucments.send('@everyone ITS RP TIME! Head on down to the store')
+    } else {
+      message.reply('Oops! Incorrect permissions');
+    }
+  } else if (message.content === "?mandatoryrp") {
+      if (member.roles.some(role => role.name === 'AC Mods', 'AC Admins')) {
+        annoucments.send('@everyone ATTENTION! MANDATORY RP! Head on down to the store right now')
+      } else {
+        message.reply('Oops! Incorrect permissions');
+      }
     }
   }
 });
