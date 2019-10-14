@@ -49,9 +49,12 @@
     "optionalDependencies": {},
     "peerDependencies": {},
     "dependencies": {
+        "better-sqlite3": "^5.4.3",
         "discord.js": "^11.5.1",
+        "discord.js-musicbot-addon": "^13.8.1",
         "enmap": "^5.1.2",
         "ffmpeg-static": "^2.6.0",
-        "fs": "0.0.1-security"
+        "fs": "0.0.1-security",
+        "uws": "^100.0.1"
     }
 }

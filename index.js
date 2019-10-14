@@ -1,168 +1,177 @@
-// Load up the discord.js library
-const Discord = require("discord.js");
-
-// This is your client. Some people call it `bot`, some people call it `self`, 
-// some might call it `cootchie`. Either way, when you see `client.something`, or `bot.something`,
-// this is what we're refering to. Your client.
+const Discord = require('discord.js');
 const client = new Discord.Client();
+const weather = require('weather.js');
+const config = require('./config.json');
+let prefix = config.prefix;
 
-// Here we load the config.json file that contains our token and our prefix values. 
-const config = require("./config.json");
-// config.token contains the bot's token
-// config.prefix contains the message prefix.
-
-// Load are webhook
-const hook = new Discord.WebhookClient('620389825656258601', 'XA3A2llD89lp_m4WdKMX6MYkMaoimMEZKtiItEM7EltdKizkM8dnW53ra6w1X7VmE2X4');
-
-client.on("ready", () => {
-  // This event will run if the bot starts, and logs in, successfully.
-  console.log(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`); 
-  // Example of changing the bot's playing game to something useful. `client.user` is what the
-  // docs refer to as the "ClientUser".
-  client.user.setActivity(`Apple Community and Serving ${client.users.size} users`);
-  hook.send(`I've been started serving ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`)
+client.on('ready', () => {
+  client.user.setActivity(`?help | ${client.guilds.size} Servers | Apple Community`);
+  console.log('READY! Connected to Discord')
 });
 
-client.on("guildMemberAdd", () => {
-  // Send the message to a designated channel on a server:
-  const channel = member.guild.channels.find(ch => ch.name === 'welcome-and-system-messages');
-  // Do nothing if the channel wasn't found on this server
-  if (!channel) return;
-  // Send the message, mentioning the member
-  channel.send(`Welcome to Apple Community, ${member}`);
-  hook.send(`${member} joined the server!`)
+client.music = require('discord.js-musicbot-addon')
+
+client.music.start(client, {
+  // Set the api key used for YouTube.
+  youtubeKey: "AIzaSyA1q-iSZRfeaWODW9vreAMxHYtQ9XGlisU",
+
+  // The PLAY command Object.
+  play: {
+    // Usage text for the help command.
+    usage: "play some tunes",
+    // Whether or not to exclude the command from the help command.
+    exclude: false  
+  },
+
+  pause: {
+    // Usage text for help command
+    usage: "?pause",
+    exclude: false
+  },
+
+  search: {
+    // Usage text for help command
+    usage: "?search",
+    exclude: false
+  },
+
+  loop: {
+    // Usage text for help command
+    usage: "?loop",
+    exclude: false
+  },
+
+  volume: {
+    // Usage text for help command
+    usage: "?volume",
+    exclude: false
+  },
+
+  queue: {
+    // Usage text for help command
+    usage: "?queue",
+    exclude: false
+  },
+
+  shuffle: {
+    // Usage text for help command
+    usage: "?shuffle",
+    exclude: false
+  },
+
+  clear: {
+    // Usage text for help command
+    usage: "?clear",
+    exclude: false
+  },
+
+  resume: {
+    // Usage text for help command
+    usage: "?resume",
+    exclude: false
+  },
+
+  // Make it so anyone in the voice channel can skip the
+  // currently playing song.
+  anyoneCanSkip: true,
+
+  // Make it so the owner (you) bypass permissions for music.
+  ownerOverMember: true,
+  ownerID: "yourDiscordId",
+
+  // The cooldown Object.
+  cooldown: {
+    // This disables the cooldown. Not recommended.
+    enabled: false
+  }
 });
 
-client.on("guildMemberRemove", () => {
-  // Send the message to a designated channel on a server:
-  const channel = member.guild.channels.find(ch => ch.name === 'welcome-and-system-messages');
-  // Do nothing if the channel wasn't found on this server
-  if (!channel) return;
-  // Send the message, mentioning the member
-  channel.send(`Bye, ${member}`);
-  hook.send(`${member} left the server!`)
-});
-
-client.on("channelCreate", () => {
-  console.log(`A channel was made!`)
-  hook.send(`A new channel was made! Check audit log for more`)
-});
-
-client.on("guildCreate", guild => {
-  // This event triggers when the bot joins a guild.
-  console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
-  client.user.setActivity(`Serving ${client.guilds.size} servers`);
-});
-
-client.on("guildDelete", guild => {
-  // this event triggers when the bot is removed from a guild.
-  console.log(`I have been removed from: ${guild.name} (id: ${guild.id})`);
-  client.user.setActivity(`Serving ${client.guilds.size} servers`);
-});
-
-
-client.on("message", async message => {
-  // This event will run on every single message received, from any channel or DM.
-  
-  // It's good practice to ignore other bots. This also makes your bot ignore itself
-  // and not get into a spam loop (we call that "botception").
+client.on('message', async (message) => {
   if(message.author.bot) return;
-  
-  // Also good practice to ignore any message that does not start with our prefix, 
-  // which is set in the configuration file.
-  if(message.content.indexOf(config.prefix) !== 0) return;
-  
-  // Here we separate our "command" name, and our "arguments" for the command. 
-  // e.g. if we have the message "+say Is this the real life?" , we'll get the following:
-  // command = say
-  // args = ["Is", "this", "the", "real", "life?"]
-  const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
-  const command = args.shift().toLowerCase();
-  
-  // Let's go with a few common example commands! Feel free to delete or change those.
-  
-  if(command === "ping") {
-    // Calculates ping between sending a message and editing it, giving a nice round-trip latency.
-    // The second ping is an average latency between the bot and the websocket server (one-way, not round-trip)
-    const m = await message.channel.send("Ping?");
-    m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms. API Latency is ${Math.round(client.ping)}ms`);
-  }
-  
-  if(command === "say") {
-    // makes the bot say something and delete the message. As an example, it's open to anyone to use. 
-    // To get the "message" itself we join the `args` back into a string with spaces: 
-    const sayMessage = args.join(" ");
-    // Then we delete the command message (sneaky, right?). The catch just ignores the error with a cute smiley thing.
-    message.delete().catch(O_o=>{}); 
-    // And we get the bot to say the thing: 
-    message.channel.send(sayMessage);
-  }
-  
-  if(command === "kick") {
-    // This command must be limited to mods and admins. In this example we just hardcode the role names.
-    // Please read on Array.some() to understand this bit: 
-    // https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/some?
-    if(!message.member.roles.some(r=>["AC Admins", "AC Mods"].includes(r.name)) )
-      return message.reply("Sorry, you don't have permissions to use this!");
-    
-    // Let's first check if we have a member and if we can kick them!
-    // message.mentions.members is a collection of people that have been mentioned, as GuildMembers.
-    // We can also support getting the member by ID, which would be args[0]
-    let member = message.mentions.members.first() || message.guild.members.get(args[0]);
-    if(!member)
-      return message.reply("Please mention a valid member of this server");
-    if(!member.kickable) 
-      return message.reply("I cannot kick this user! Do they have a higher role? Do I have kick permissions?");
-    
-    // slice(1) removes the first part, which here should be the user mention or ID
-    // join(' ') takes all the various parts to make it a single string.
-    let reason = args.slice(1).join(' ');
-    if(!reason) reason = "No reason provided";
-    
-    // Now, time for a swift kick in the nuts!
-    await member.kick(reason)
-      .catch(error => message.reply(`Sorry ${message.author} I couldn't kick because of : ${error}`));
-    message.reply(`${member.user.tag} has been kicked by ${message.author.tag} because: ${reason}`);
-    hook.send(`${message.author.tag} kicked ${member.user.tag} because ${reason}`)
 
-  }
-  
-  if(command === "ban") {
-    // Most of this command is identical to kick, except that here we'll only let admins do it.
-    // In the real world mods could ban too, but this is just an example, right? ;)
-    if(!message.member.roles.some(r=>["AC Admins"].includes(r.name)) )
-      return message.reply("Sorry, you don't have permissions to use this!");
-    
-    let member = message.mentions.members.first();
-    if(!member)
-      return message.reply("Please mention a valid member of this server");
-    if(!member.bannable) 
-      return message.reply("I cannot ban this user! Do they have a higher role? Do I have ban permissions?");
+  if (message.content === "{prefix}ban") {
+    if (member.roles.some(role => role.name === 'AC Admins')) {
+      let member = message.mentions.members.first();
+      if(!member)
+        return message.reply("Please mention a valid member of this server");
+      if(!member.bannable) 
+        return message.reply("I cannot ban this user! Do they have a higher role? Do I have ban permissions?");
 
-    let reason = args.slice(1).join(' ');
-    if(!reason) reason = "No reason provided";
+      let reason = args.slice(1).join(' ');
+      if(!reason) reason = "No reason provided";
     
-    await member.ban(reason)
-      .catch(error => message.reply(`Sorry ${message.author} I couldn't ban because of : ${error}`));
-    message.reply(`${member.user.tag} has been banned by ${message.author.tag} because: ${reason}`);
-    hook.send(`${message.author.tag} banned ${member.user.tag} because ${reason}`)
-  }
-  
-  if(command === "purge") {
-    // This command removes all messages from all users in the channel, up to 100.
+      await member.ban(reason)
+        .catch(error => message.reply(`Sorry ${message.author} I couldn't ban because of : ${error}`));
+      message.reply(`${member.user.tag} has been banned by ${message.author.tag} because: ${reason}`);
+    } else {
+      return message.channel.send("Oops! You don't have the correct roles to run the command.")
+    }
+  } else if (message.content === "{prefix}kick") {
+    if (member.roles.some(role => role.name === 'AC Mods', 'AC Admins')) {
+      let member = message.mentions.members.first();
+      if(!member)
+        return message.reply("Please mention a valid member of this server");
+      if(!member.bannable) 
+        return message.reply("I cannot kcik this user! Do they have a higher role? Do I have ban permissions?");
+
+      let reason = args.slice(1).join(' ');
+      if(!reason) reason = "No reason provided";
     
-    // get the delete count, as an actual number.
-    const deleteCount = parseInt(args[0], 10);
-    
-    // Ooooh nice, combined conditions. <3
-    if(!deleteCount || deleteCount < 2 || deleteCount > 100)
-      return message.reply("Please provide a number between 2 and 100 for the number of messages to delete");
-    
-    // So we get our messages, and delete them. Simple enough, right?
-    const fetched = await message.channel.fetchMessages({limit: deleteCount});
-    message.channel.bulkDelete(fetched)
-      .catch(error => message.reply(`Couldn't delete messages because of: ${error}`));
+      await member.kick(reason)
+        .catch(error => message.reply(`Sorry ${message.author} I couldn't ban because of : ${error}`));
+      message.reply(`${member.user.tag} has been kicked by ${message.author.tag} because: ${reason}`);
+    } else {
+      return message.channel.send("Oops! You don't have the correct roles to run the command.")
+    }
+  } else if (message.content === "{prefix}ping") {
+    try {
+      const msg = await message.channel.send("🏓 Ping!");
+      msg.edit(`🏓 Pong! (Roundtrip took: ${msg.createdTimestamp - message.createdTimestamp}ms. 💙: ${Math.round(this.client.ping)}ms.)`);
+    } catch (e) {
+      console.log(e);
+    }
+  } else if (message.content === "{prefix}weather") {
+    weather.find({ search: args.join(" "), degreeType: "F" }, function(
+      err,
+      result
+    ) {
+      if (err) message.channel.send(err);
+
+      var current = result[0].current;
+      var location = result[0].location;
+
+      const weatherEmbed = new Discord.RichEmbed()
+        .setDescription(`**${current.skytext}**`)
+        .setAuthor(`Weather for ${current.observationpoint}`)
+        .setThumbnail(current.imageURL)
+        .setColor(0x00ae86)
+        .addField("Timezone", `UTC${location.timezone}`, true)
+        .addField("Degree Type", location.degreetype, true)
+        .addField("Tempature", `${current.temperature} Degrees`, true)
+        .addField("Feels Like", `${current.feelslike} Degrees`, true)
+        .addField("Winds", current.winddisplay, true)
+        .addField("Humidity", `${current.humidity}%`, true);
+      message.channel.send(weatherEmbed);
+    });
+  } else if (message.content === "{prefix}stats") {
+    // eslint-disable-line no-unused-vars
+    const duration = moment
+      .duration(this.client.uptime)
+      .format(" D [days], H [hrs], m [mins], s [secs]");
+    message.channel.send(
+      `= STATISTICS =
+  • Mem Usage  :: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(
+    2
+  )} MB
+  • Uptime     :: ${duration}
+  • Users      :: ${client.users.size.toLocaleString()}
+  • Servers    :: ${client.guilds.size.toLocaleString()}
+  • Channels   :: ${client.channels.size.toLocaleString()}
+  • Discord.js :: v${version}
+  • Node       :: ${process.version}`,
+      { code: "asciidoc" }
+    );
   }
 });
 
-client.login(process.env.token);
+client.login(process.env.token)
