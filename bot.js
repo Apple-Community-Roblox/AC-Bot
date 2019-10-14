@@ -206,7 +206,7 @@ client.on('message', async (message) => {
     }
   } else if (message.content === "?meeting") {
     if (member.roles.some(role => role.name === 'AC Mods', 'AC Admins')) {
-      annoucments.send('@everyone ATTENTION! MANDATORY RP! Head on down to the store right now')
+      annoucments.send('@everyone ATTENTION! MEETING! Head on down to the store right now')
     } else {
       message.reply('Oops! Incorrect permissions');
     }
