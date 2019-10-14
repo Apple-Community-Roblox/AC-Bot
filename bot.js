@@ -175,54 +175,23 @@ client.on('message', async (message) => {
       { code: "asciidoc" }
     );
   } else if (message.content === "?warn") {
-      //!warn @daeshan <reason>
-      if(!message.member.hasPermission("MANAGE_MEMBERS")) return message.reply("No can do pal!");
-      let wUser = message.guild.member(message.mentions.users.first()) || message.guild.members.get(args[0])
-      if(!wUser) return message.reply("Couldn't find them yo");
-      if(wUser.hasPermission("MANAGE_MESSAGES")) return message.reply("They waaaay too kewl");
-      let reason = args.join(" ").slice(22);
-
-      if(!warns[wUser.id]) warns[wUser.id] = {
-        warns: 0
-      };
-
-      warns[wUser.id].warns++;
-
-    fs.writeFile("./warnings.json", JSON.stringify(warns), (err) => {
-      if (err) console.log(err)
-    });
-
-    let warnEmbed = new Discord.RichEmbed()
-      .setDescription("Warns")
-      .setAuthor(message.author.username)
-      .setColor("#fc6400")
-      .addField("Warned User", `<@${wUser.id}>`)
-      .addField("Warned In", message.channel)
-      .addField("Number of Warnings", warns[wUser.id].warns)
-      .addField("Reason", reason);
-
-    let warnchannel = message.guild.channels.find(`name`, "logs");
-    if(!warnchannel) return message.reply("Couldn't find channel");
-
-    warnchannel.send(warnEmbed);
-
-    if(warns[wUser.id].warns == 2){
-      let muterole = message.guild.roles.find(`name`, "muted");
-      if(!muterole) return message.reply("You should create that role dude.");
-
-      let mutetime = "10s";
-      await(wUser.addRole(muterole.id));
-      message.channel.send(`<@${wUser.id}> has been temporarily muted`);
-
-      setTimeout(function(){
-        wUser.removeRole(muterole.id)
-        message.reply(`<@${wUser.id}> has been unmuted.`)
-      }, ms(mutetime))
-    }
-    if(warns[wUser.id].warns == 3){
-      message.guild.member(wUser).ban(reason);
-      message.reply(`<@${wUser.id}> has been banned.`)
-    }
+      if (member.roles.some(role => role.name === 'AC Mods', 'AC Admins')) {
+        let reason = args.slice(1).join(' ');
+        let user = message.mentions.users.first();
+        let modlog = client.channels.find('name', 'mod-log');
+        if (!modlog) return message.reply('I cannot find a mod-log channel');
+        if (reason.length < 1) return message.reply('You must supply a reason for the warning.');
+        if (message.mentions.users.size < 1) return message.reply('You must mention someone to warn them.').catch(console.error);
+        const embed = new Discord.RichEmbed()
+        .setColor(0x00AE86)
+        .setTimestamp()
+        .addField('Action:', 'Warning')
+        .addField('User:', `${user.username}#${user.discriminator}`)
+        .addField('Modrator:', `${message.author.username}#${message.author.discriminator}`);
+        return client.channels.get(modlog.id).sendEmbed(embed)
+      } else {
+        message.reply('Oops! Incorrect permissions');
+      }
   } else if (message.content === "?rp") {
     if (member.roles.some(role => role.name === 'AC Mods', 'AC Admins')) {
       annoucments.send('@everyone ITS RP TIME! Head on down to the store')
