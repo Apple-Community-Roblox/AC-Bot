@@ -1,6 +1,6 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const weather = require('weather.js');
+const weather = require('weather-js');
 const config = require('./config.json');
 let prefix = config.prefix;
 
