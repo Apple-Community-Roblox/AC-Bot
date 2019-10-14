@@ -199,13 +199,18 @@ client.on('message', async (message) => {
       message.reply('Oops! Incorrect permissions');
     }
   } else if (message.content === "?mandatoryrp") {
-      if (member.roles.some(role => role.name === 'AC Mods', 'AC Admins')) {
-        annoucments.send('@everyone ATTENTION! MANDATORY RP! Head on down to the store right now')
-      } else {
-        message.reply('Oops! Incorrect permissions');
-      }
+    if (member.roles.some(role => role.name === 'AC Mods', 'AC Admins')) {
+      annoucments.send('@everyone ATTENTION! MANDATORY RP! Head on down to the store right now')
+    } else {
+      message.reply('Oops! Incorrect permissions');
     }
-  )};
+  } else if (message.content === "?mandatoryrp") {
+    if (member.roles.some(role => role.name === 'AC Mods', 'AC Admins')) {
+      annoucments.send('@everyone ATTENTION! MANDATORY RP! Head on down to the store right now')
+    } else {
+      message.reply('Oops! Incorrect permissions');
+    }
+  }
 });
 
 client.login(process.env.token)
