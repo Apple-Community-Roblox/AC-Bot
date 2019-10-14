@@ -20,7 +20,7 @@ client.music.start(client, {
     // Usage text for the help command.
     usage: "play some tunes",
     // Whether or not to exclude the command from the help command.
-    exclude: false  
+    exclude: false
   },
 
   pause: {
@@ -91,19 +91,17 @@ client.on('message', async (message) => {
 
   if (message.content === "?group") {
     message.channel.send('Here is the group: https://web.roblox.com/groups/4158226/Apple-Community/')
-  }
-
-  if (message.content === "?ban") {
+  } else if (message.content === "?ban") {
     if (member.roles.some(role => role.name === 'AC Admins')) {
       let member = message.mentions.members.first();
       if(!member)
         return message.reply("Please mention a valid member of this server");
-      if(!member.bannable) 
+      if(!member.bannable)
         return message.reply("I cannot ban this user! Do they have a higher role? Do I have ban permissions?");
 
       let reason = args.slice(1).join(' ');
       if(!reason) reason = "No reason provided";
-    
+
       await member.ban(reason)
         .catch(error => message.reply(`Sorry ${message.author} I couldn't ban because of : ${error}`));
       message.reply(`${member.user.tag} has been banned by ${message.author.tag} because: ${reason}`);
@@ -115,12 +113,12 @@ client.on('message', async (message) => {
       let member = message.mentions.members.first();
       if(!member)
         return message.reply("Please mention a valid member of this server");
-      if(!member.bannable) 
+      if(!member.bannable)
         return message.reply("I cannot kcik this user! Do they have a higher role? Do I have ban permissions?");
 
       let reason = args.slice(1).join(' ');
       if(!reason) reason = "No reason provided";
-    
+
       await member.kick(reason)
         .catch(error => message.reply(`Sorry ${message.author} I couldn't ban because of : ${error}`));
       message.reply(`${member.user.tag} has been kicked by ${message.author.tag} because: ${reason}`);
