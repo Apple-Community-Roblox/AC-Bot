@@ -55,6 +55,7 @@
         "enmap": "^5.1.2",
         "ffmpeg-static": "^2.6.0",
         "fs": "0.0.1-security",
-        "uws": "^100.0.1"
+        "uws": "^100.0.1",
+        "weather.js": "^0.1.0"
     }
 }
