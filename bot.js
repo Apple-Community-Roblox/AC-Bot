@@ -238,6 +238,12 @@ client.on('message', async (message) => {
     return message.channel.send(`${target.tag} has ${currency.getBalance(target.id)}💰`);
 	} else if (command === 'inventory') {
 		// [delta]
+		const target = message.mentions.users.first() || message.author;
+		const user = await Users.findOne({ where: { user_id: target.id } });
+		const items = await user.getItems();
+
+		if (!items.length) return message.channel.send(`${target.tag} has nothing!`);
+		return message.channel.send(`${target.tag} currently has ${items.map(i => `${i.amount} ${i.item.name}`).join(', ')}`);
 	} else if (command === 'transfer') {
 		// [epsilon]
 	} else if (command === 'buy') {
