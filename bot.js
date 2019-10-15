@@ -24,7 +24,7 @@ Reflect.defineProperty(currency, 'getBalance', {
 	},
 });
 
-client.on('ready', () => {
+client.on('ready', async () => {
   const storedBalances = await Users.findAll();
   storedBalances.forEach(b => currency.set(b.user_id, b));
   client.user.setActivity(`?help | ${client.guilds.size} Servers | Apple Community`);
