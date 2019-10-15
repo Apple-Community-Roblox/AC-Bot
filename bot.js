@@ -2,7 +2,10 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 const weather = require('weather-js');
 const config = require('./config.json');
-let prefix = config.prefix;
+const { Users, CurrencyShop } = require('./dbObjects');
+const { Op } = require('sequelize');
+const currency = new Discord.Collection();
+const prefix = config.prefix;
 
 Reflect.defineProperty(currency, 'add', {
 	value: async function add(id, amount) {
