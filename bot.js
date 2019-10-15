@@ -4,7 +4,29 @@ const weather = require('weather-js');
 const config = require('./config.json');
 let prefix = config.prefix;
 
+Reflect.defineProperty(currency, 'add', {
+	value: async function add(id, amount) {
+		const user = currency.get(id);
+		if (user) {
+			user.balance += Number(amount);
+			return user.save();
+		}
+		const newUser = await Users.create({ user_id: id, balance: amount });
+		currency.set(id, newUser);
+		return newUser;
+	},
+});
+
+Reflect.defineProperty(currency, 'getBalance', {
+	value: function getBalance(id) {
+		const user = currency.get(id);
+		return user ? user.balance : 0;
+	},
+});
+
 client.on('ready', () => {
+  const storedBalances = await Users.findAll();
+  storedBalances.forEach(b => currency.set(b.user_id, b));
   client.user.setActivity(`?help | ${client.guilds.size} Servers | Apple Community`);
   console.log('READY! Connected to Discord')
 });
@@ -210,7 +232,21 @@ client.on('message', async (message) => {
     } else {
       message.reply('Oops! Incorrect permissions');
     }
-  }
+  } else if (command === 'balance') {
+		// [gamma]
+    const target = message.mentions.users.first() || message.author;
+    return message.channel.send(`${target.tag} has ${currency.getBalance(target.id)}💰`);
+	} else if (command === 'inventory') {
+		// [delta]
+	} else if (command === 'transfer') {
+		// [epsilon]
+	} else if (command === 'buy') {
+		// [zeta]
+	} else if (command === 'shop') {
+		// [theta]
+	} else if (command === 'leaderboard') {
+		// [lambda]
+	}
 });
 
 client.login(process.env.token)
