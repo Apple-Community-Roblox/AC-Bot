@@ -1,1 +1,1 @@
-worker: node index.js
+worker: node dbInit.js && node index.js
