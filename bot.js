@@ -246,8 +246,21 @@ client.on('message', async (message) => {
 		return message.channel.send(`${target.tag} currently has ${items.map(i => `${i.amount} ${i.item.name}`).join(', ')}`);
 	} else if (command === 'transfer') {
 		// [epsilon]
+		const item = await CurrencyShop.findOne({ where: { name: { [Op.like]: commandArgs } } });
+		if (!item) return message.channel.send(`That item doesn't exist.`);
+		if (item.cost > currency.getBalance(message.author.id)) {
+			return message.channel.send(`You currently have ${currency.getBalance(message.author.id)}, but the ${item.name} costs ${item.cost}!`);
+		}
+
+		const user = await Users.findOne({ where: { user_id: message.author.id } });
+		currency.add(message.author.id, -item.cost);
+		await user.addItem(item);
+
+		message.channel.send(`You've bought: ${item.name}.`);
 	} else if (command === 'buy') {
 		// [zeta]
+		const items = await CurrencyShop.findAll();
+		return message.channel.send(items.map(item => `${item.name}: ${item.cost}💰`).join('\n'), { code: true });
 	} else if (command === 'shop') {
 		// [theta]
 	} else if (command === 'leaderboard') {
