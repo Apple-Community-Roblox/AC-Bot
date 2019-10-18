@@ -112,6 +112,7 @@ client.music.start(client, {
 });
 
 client.on('message', async (message) => {
+  const member = message.member; 
   const annoucments = message.guild.channels.find(`name`, "annoucments");
   if(message.author.bot) return;
 
