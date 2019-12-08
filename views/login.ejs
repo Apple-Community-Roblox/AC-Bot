@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <%- include ('/app/public/blocks/header.ejs') -%>
+    <body>
+        <form>
+            <input type="email" placeholder="Enter your email">
+            <input type="password" placeholder="Enter your password">
+            <button type="submit">Log In</button>
+        </form>
+        <script>
+            // Sign in screen.
+            firebase.auth().signInWithEmailAndPassword(email, password)
+            .then((result) => {
+                // Redirect to profile page after sign-in. The service worker will detect
+                // this and append the ID token to the header.
+                window.location.assign('/profile');
+            })
+            .catch((error) => {
+                // Error occurred.
+            });
+        </script>
+    </body>
+</html>

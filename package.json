@@ -1,64 +1,81 @@
 {
-    "name": "acbot",
-    "description": "AC Discord Bot",
-    "license": "MIT",
-    "author": {
-        "name": "joshuadl12",
-        "email": "joshuadeleon210@gmail.com",
-        "url": "https://applecommunity.tk"
-    },
-    "main": "index.js",
-    "contributors": [
-        "0_Braden",
-        "joshuadl12",
-        "AC Dev Team"
-    ],
-    "bugs": {
-        "email": "joshuadeleon210@gmail.com",
-        "url": "https://github.com/joshuadl12/AC-Bot/issues"
-    },
-    "homepage": "https://github.com/joshuadl12/AC-Bot",
-    "displayName": "Apple Community Bot",
-    "maintainers": [
-        "joshuadl12",
-        "0_Braden"
-    ],
-    "version": "1.1.0",
-    "readme": "README.md",
-    "markdown": "github",
-    "files": [
-        "index.js",
-        "Procfile",
-        "package.json",
-        "node_modules/",
-        "package-lock.json"
-    ],
-    "repository": {
-        "type": "Code",
-        "directory": "master",
-        "url": "https://github.com/joshuadl12/AC-Bot"
-    },
-    "workspaces": "node-js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node .",
-        "restart": "node .",
-        "lint": "eslint ."
-    },
-    "devDependencies": {},
-    "optionalDependencies": {},
-    "peerDependencies": {},
-    "dependencies": {
-        "better-sqlite3": "^5.4.3",
-        "discord.js": "^11.5.1",
-        "discord.js-musicbot-addon": "^13.8.1",
-        "enmap": "^5.1.2",
-        "ffmpeg-static": "^2.6.0",
-        "fs": "0.0.1-security",
-        "sequelize": "^5.19.6",
-        "sqlite3": "^4.1.0",
-        "uws": "^100.0.1",
-        "weather-js": "^2.0.0",
-        "weather.js": "^0.1.0"
-    }
+  "name": "acbot",
+  "description": "AC Discord Bot",
+  "license": "MIT",
+  "author": {
+    "name": "joshuadl12",
+    "email": "joshuadeleon210@gmail.com",
+    "url": "https://applecommunity.tk"
+  },
+  "main": "index.js",
+  "contributors": [
+    "0_Braden",
+    "joshuadl12",
+    "AC Dev Team"
+  ],
+  "bugs": {
+    "email": "joshuadeleon210@gmail.com",
+    "url": "https://github.com/joshuadl12/AC-Bot/issues"
+  },
+  "homepage": "https://github.com/joshuadl12/AC-Bot",
+  "displayName": "Apple Community Bot",
+  "maintainers": [
+    "joshuadl12",
+    "0_Braden"
+  ],
+  "version": "1.1.0",
+  "readme": "README.md",
+  "markdown": "github",
+  "files": [
+    "index.js",
+    "Procfile",
+    "package.json",
+    "node_modules/",
+    "package-lock.json"
+  ],
+  "repository": {
+    "type": "Code",
+    "directory": "master",
+    "url": "https://github.com/joshuadl12/AC-Bot"
+  },
+  "workspaces": "node-js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node .",
+    "restart": "node .",
+    "lint": "eslint ."
+  },
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "peerDependencies": {},
+  "dependencies": {
+    "better-sqlite3": "^5.4.3",
+    "discord.js": "^11.5.1",
+    "discord.js-musicbot-addon": "^13.8.1",
+    "enmap": "^5.2.3",
+    "ffmpeg-static": "^2.7.0",
+    "http": "0.0.0",
+    "fs": "^0.0.2",
+    "sequelize": "^6.0.0",
+    "sqlite3": "^4.1.1",
+    "sqlite": "3.0.3",
+    "uws": "^100.0.1",
+    "weather-js": "^2.0.0",
+    "weather.js": "^0.1.0",
+    "moment": "2.24.0",
+    "express": "^4.17.1",
+    "node-opus": "0.3.3",
+    "opusscript": "0.0.7",
+    "quick.db": "7.0.0-b22",
+    "express-glitch-keepalive": "^0.2.0",
+    "ejs": "^3.0.1",
+    "passport": "0.4.0",
+    "lru-cache": "5.1.1",
+    "uptime-robot": "1.3.0",
+    "firebase": "^7.5.2",
+    "firebase-admin": "^8.8.0"
+  },
+  "engines": {
+    "node": "10.x"
+  }
 }
