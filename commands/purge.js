@@ -1,5 +1,4 @@
-exports.run = (client, message, args) => {
-    async () => {
+exports.run = async (client, message, args) => {
     // This command removes all messages from all users in the channel, up to 100.
 
     // get the delete count, as an actual number.
@@ -18,5 +17,4 @@ exports.run = (client, message, args) => {
       .catch(error =>
         message.reply(`Couldn't delete messages because of: ${error}`)
       );
-    }
 }

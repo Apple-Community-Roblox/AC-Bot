@@ -3,6 +3,7 @@ module.exports = (client, message) => {
     if (message.author.bot) return;
   
     // Ignore messages not starting with the prefix (in config.json)
+    client.config = require('/app/config.json')
     if (message.content.indexOf(client.config.prefix) !== 0) return;
   
     // Our standard argument/command name definition.

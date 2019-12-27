@@ -1,29 +1,45 @@
-exports.run = (client, message, args, [mention, ...reason]) => {
-  if (member.roles.some(role => role.name === "AC Admins")) {
-      let member = message.mentions.members.first();
-      if (!member)
-        return message.reply("Please mention a valid member of this server");
-      if (!member.bannable)
-        return message.reply(
-          "I cannot ban this user! Do they have a higher role? Do I have ban permissions?"
-        );
+exports.run = (client, message, [mention, ...reason]) => {
+  const adminRole = message.guild.roles.find(role => role.name === "AC Mods");
+  if (!adminRole) return console.log("The Admins role does not exist");
 
-      let reason = args.slice(1).join(" ");
-      if (!reason) reason = "No reason provided";
+  if (!message.member.roles.has(adminRole.id))
+    return message.reply({
+        embed: {
+          color: 3447003,
+          title: "Error",
+          description: `You can't use that command`,
+          footer: {
+            text: "© 2019 Apple Community"
+          }
+        }
+      });
 
-      await member
-        .ban(reason)
-        .catch(error =>
-          message.reply(
-            `Sorry ${message.author} I couldn't ban because of : ${error}`
-          )
-        );
-      message.reply(
-        `${member.user.tag} has been banned by ${message.author.tag} because: ${reason}`
-      );
-    } else {
-      return message.channel.send(
-        "Oops! You don't have the correct roles to run the command."
-      );
-    }
-  };
+  if (message.mentions.members.size === 0)
+    return message.reply({
+        embed: {
+          color: 3447003,
+          title: "Error",
+          description: `Please mention a valid member of this server`,
+          footer: {
+            text: "© 2019 Apple Community"
+          }
+        }
+      });
+
+  if (!message.guild.me.hasPermission("BAN_MEMBERS")) return message.reply("");
+  
+  const banMember = message.mentions.members.first();
+
+  banMember.ban(reason.join(" ")).then(member => {
+    message.reply({
+        embed: {
+          color: 3447003,
+          title: "Success",
+          description: `${member.user.username} was succesfully kicked.`,
+          footer: {
+            text: "© 2019 Apple Community"
+          }
+        }
+    });
+  });
+};

@@ -1,7 +1,16 @@
 const Discord = require("discord.js");
+const BotkitDiscord = require('botkit-discord');
+const config = {
+    token: process.env.TOKEN1 // Discord bot token
+}
+const music = require("discord.js-musicbot-addon");
+const rbx = require("noblox.js");
 const client = new Discord.Client();
-const weather = require("weather-js");
-const config = require("./config.json");
+const fs = require('fs');
+const Enmap = require("enmap");
+const { ErelaClient, Utils } = require('erela.js')
+const weather = require("weather-js")
+const { nodes } = require('/app/config.json')
 const { Users, CurrencyShop } = require("./dbObjects");
 const { Op } = require("sequelize");
 const ytdl = require("ytdl-core");
@@ -53,6 +62,11 @@ client.on("guildMemberAdd", async member => {
   });
 });
 
+music.start(client, {
+  youtubeKey: "AIzaSyA1q-iSZRfeaWODW9vreAMxHYtQ9XGlisU",
+  botPrefix: "?"
+})
+
 client.on('error', (err) => console.error(err));
 
 client.on("ready", async () => {
@@ -65,470 +79,29 @@ client.on("ready", async () => {
   console.log(`Bot:     Ready and logged in as ${client.user.tag}`);
 });
 
-client.on("message", async message => {
-  if (message.author.bot) return;
-  currency.add(message.author.id, 1);
-
-  if (!message.content.startsWith(PREFIX)) return;
-  const input = message.content.slice(PREFIX.length).trim();
-  if (!input.length) return;
-  const args = message.content
-    .slice(config.prefix.length)
-    .trim()
-    .split(/ +/g);
-  const command = args.shift().toLowerCase();
-  const member = message.member;
-  const annoucments = client.channels.find(
-    ch => ch.name === "annoucments"
-  );
-  if (message.author.bot) return;
-
-  if (command === "purge") {
-    // This command removes all messages from all users in the channel, up to 100.
-
-    // get the delete count, as an actual number.
-    const deleteCount = parseInt(args[0], 10);
-
-    // Ooooh nice, combined conditions. <3
-    if (!deleteCount || deleteCount < 2 || deleteCount > 100)
-      return message.reply(
-        "Please provide a number between 2 and 100 for the number of messages to delete"
-      );
-
-    // So we get our messages, and delete them. Simple enough, right?
-    const fetched = await message.channel.fetchMessages({ limit: deleteCount });
-    message.channel
-      .bulkDelete(fetched)
-      .catch(error =>
-        message.reply(`Couldn't delete messages because of: ${error}`)
-      );
-  } else if (message.content === "?group") {
-    message.channel.send(
-      "Here is the group: https://web.roblox.com/groups/4158226/Apple-Community/"
-    );
-  } else if (message.content === "?ban") {
-    if (member.roles.some(role => role.name === "AC Admins")) {
-      let member = message.mentions.members.first();
-      if (!member)
-        return message.reply("Please mention a valid member of this server");
-      if (!member.bannable)
-        return message.reply(
-          "I cannot ban this user! Do they have a higher role? Do I have ban permissions?"
-        );
-
-      let reason = args.slice(1).join(" ");
-      if (!reason) reason = "No reason provided";
-
-      await member
-        .ban(reason)
-        .catch(error =>
-          message.reply(
-            `Sorry ${message.author} I couldn't ban because of : ${error}`
-          )
-        );
-      message.reply(
-        `${member.user.tag} has been banned by ${message.author.tag} because: ${reason}`
-      );
-    } else {
-      return message.channel.send(
-        "Oops! You don't have the correct roles to run the command."
-      );
-    }
-  } else if (message.content === "?annoucments") {
-    message.channel.send({
-      embed: {
-        color: 3447003,
-        title: "Annnoucments",
-        description: `Very cool stuff`,
-        footer: {
-          text: "© 2019 Apple Community"
-        }
-      }
-    });
-  } else if (message.content === "?kick") {
-    if (member.roles.some(role => role.name === "AC Mods", "AC Admins")) {
-      let member = message.mentions.members.first();
-      if (!member)
-        return message.reply({
-          embed: {
-            color: 3447003,
-            title: "Error",
-            description: `Please mention a valid member of this server`,
-            footer: {
-              text: "© 2019 Apple Community"
-            }
-          }
-        });
-
-      if (!member.bannable)
-        return message.reply({
-          embed: {
-            color: 3447003,
-            title: "Error",
-            description:
-              "I cannot kick this user! Do they have a higher role? Do I have kick permissions?",
-            footer: {
-              text: "© 2019 Apple Community"
-            }
-          }
-        });
-
-      let reason = args.slice(1).join(" ");
-      if (!reason) reason = "No reason provided";
-
-      await member.kick(reason).catch(error =>
-        message.reply({
-          embed: {
-            color: 3447003,
-            title: "Error",
-            description: `Sorry ${message.author}, I wasn't able to kick because ${error}`,
-            footer: {
-              text: "© 2019 Apple Community"
-            }
-          }
-        })
-      );
-      message.reply(
-        `${member.user.tag} has been kicked by ${message.author.tag} because: ${reason}`
-      );
-    } else {
-      return message.channel.send(
-        "Oops! You don't have the correct roles to run the command."
-      );
-    }
-  } else if (message.content === "?ping") {
-    try {
-      const msg = await message.channel.send("🏓 Ping!");
-      msg.edit(
-        `🏓 Pong! (Roundtrip took: ${msg.createdTimestamp -
-          message.createdTimestamp}ms. 💙: ${Math.round(client.ping)}ms.)`
-      );
-    } catch (e) {
-      console.log(e);
-    }
-  } else if (message.content === "?weather") {
-    weather.find({ search: args.join(" "), degreeType: "F" }, function(
-      err,
-      result
-    ) {
-      if (err) message.channel.send(err);
-
-      var current = result[0].current;
-      var location = result[0].location;
-
-      const weatherEmbed = new Discord.RichEmbed()
-        .setDescription(`**${current.skytext}**`)
-        .setAuthor(`Weather for ${current.observationpoint}`)
-        .setThumbnail(current.imageURL)
-        .setColor(0x00ae86)
-        .addField("Timezone", `UTC${location.timezone}`, true)
-        .addField("Degree Type", location.degreetype, true)
-        .addField("Tempature", `${current.temperature} Degrees`, true)
-        .addField("Feels Like", `${current.feelslike} Degrees`, true)
-        .addField("Winds", current.winddisplay, true)
-        .addField("Humidity", `${current.humidity}%`, true);
-      message.channel.send(weatherEmbed);
-    });
-  } else if (message.content === "?stats") {
-    // eslint-disable-line no-unused-vars
-    const duration = moment.format(" D [days], H [hrs], m [mins], s [secs]");
-    message.channel.send(
-      `= STATISTICS =
-  • Mem Usage  :: ${(process.memoryUsage().heapUsed / 1024 / 1024).toFixed(
-    2
-  )} MB
-  • Uptime     :: ${duration}
-  • Users      :: ${client.users.size.toLocaleString()}
-  • Servers    :: ${client.guilds.size.toLocaleString()}
-  • Channels   :: ${client.channels.size.toLocaleString()}
-  • Discord.js :: v${version}
-  • Node       :: ${process.version}`,
-      { code: "asciidoc" }
-    );
-  } else if (message.content === "?warn") {
-    if (member.roles.some(role => role.name === "AC Mods", "AC Admins")) {
-      let reason = args.slice(1).join(" ");
-      let user = message.mentions.users.first();
-      let modlog = client.channels.find("name", "logs");
-      if (!modlog) return message.reply("I cannot find a mod-log channel");
-      if (reason.length < 1)
-        return message.reply("You must supply a reason for the warning.");
-      if (message.mentions.users.size < 1)
-        return message
-          .reply("You must mention someone to warn them.")
-          .catch(console.error);
-      const WarnEmbed = new Discord.RichEmbed()
-        .setColor(0x00ae86)
-        .setTimestamp()
-        .addField("Action:", "Warning")
-        .addField("User:", `${user.username}#${user.discriminator}`)
-        .addField(
-          "Modrator:",
-          `${message.author.username}#${message.author.discriminator}`
-        );
-      return client.channels.get(modlog.id).sendEmbed(WarnEmbed);
-    } else {
-      message.reply("Oops! Incorrect permissions");
-    }
-  } else if (message.content === "?rp") {
-    if (member.roles.some(role => role.name === "AC Mods", "AC Admins")) {
-      annoucments.send("@everyone ITS RP TIME! Head on down to the store");
-    } else {
-      message.reply("Oops! Incorrect permissions");
-    }
-  } else if (command == "mandatoryrp") {
-    if (member.roles.some(role => role.name === "AC Mods", "AC Admins")) {
-      annoucments.send(
-        "@everyone ATTENTION! MANDATORY RP! Head on down to the store right now"
-      );
-    } else {
-      message.reply("Oops! Incorrect permissions");
-    }
-  } else if (message.content === "?meeting") {
-    if (member.roles.some(role => role.name === "AC Mods", "AC Admins")) {
-      annoucments.send(
-        "@everyone ATTENTION! MEETING! Head on down to the store right now"
-      );
-    } else {
-      message.reply("Oops! Incorrect permissions");
-    }
-  } else if (command === "balance") {
-    // [gamma]
-    const target = message.mentions.users.first() || message.author;
-    return message.channel.send(
-      `${target.tag} has ${currency.getBalance(target.id)}💰`
-    );
-  } else if (command === "inventory") {
-    // [delta]
-    const target = message.mentions.users.first() || message.author;
-    const user = await Users.findOne({ where: { user_id: target.id } });
-    const items = await user.getItems();
-
-    if (!items.length)
-      return message.channel.send(`${target.tag} has nothing!`);
-    return message.channel.send(
-      `${target.tag} currently has ${items
-        .map(i => `${i.amount} ${i.item.name}`)
-        .join(", ")}`
-    );
-  } else if (command === "say") {
-    let text = args.join(" ");
-    message.delete();
-    message.channel.send(text);
-  } else if (command === "transfer") {
-    // [epsilon]
-    const item = await CurrencyShop.findOne({
-      where: { name: { [Op.like]: args } }
-    });
-    if (!item) return message.channel.send(`That item doesn't exist.`);
-    if (item.cost > currency.getBalance(message.author.id)) {
-      return message.channel.send(
-        `You currently have ${currency.getBalance(
-          message.author.id
-        )}, but the ${item.name} costs ${item.cost}!`
-      );
-    }
-
-    const user = await Users.findOne({ where: { user_id: message.author.id } });
-    currency.add(message.author.id, -item.cost);
-    await user.addItem(item);
-
-    message.channel.send(`You've bought: ${item.name}.`);
-  } else if (command === "buy") {
-    // [zeta]
-    const items = await CurrencyShop.findAll();
-    return message.channel.send(
-      items.map(item => `${item.name}: ${item.cost}💰`).join("\n"),
-      { code: true }
-    );
-  } else if (command === "shop") {
-    // [theta]
-  } else if (command === "leaderboard") {
-    // [lambda]
-  } else if (command === "status") {
-  }
-  // New ticket command
-  if (command == "new") {
-    const reason = message.content
-      .split(" ")
-      .slice(1)
-      .join(" ");
-    if (!message.guild.roles.exists("name", "AC Mods"))
-      return message.channel.send(
-        `This server doesn't have a \`Support Staff\` role made, so the ticket won't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`
-      );
-    if (message.guild.channels.exists("name", "ticket-" + message.author.id))
-      return message.channel.send(`You already have a ticket open.`);
-    message.guild
-      .createChannel(`ticket-${message.author.id}`, "text")
-      .then(c => {
-        let role = message.guild.roles.find("name", "AC Mods");
-        let role2 = message.guild.roles.find("name", "@everyone");
-        c.overwritePermissions(role, {
-          SEND_MESSAGES: true,
-          READ_MESSAGES: true
-        });
-        c.overwritePermissions(role2, {
-          SEND_MESSAGES: false,
-          READ_MESSAGES: false
-        });
-        c.overwritePermissions(message.author, {
-          SEND_MESSAGES: true,
-          READ_MESSAGES: true
-        });
-        message.channel.send(
-          `:white_check_mark: Your ticket has been created, #${c.name}.`
-        );
-        const embed = new Discord.RichEmbed()
-          .setColor(0xcf40fa)
-          .addField(
-            `Hey ${message.author.username}!`,
-            `Please try explain why you opened this ticket with as much detail as possible. Our **Support Staff** will be here soon to help.`
-          )
-          .setTimestamp();
-        c.send({
-          embed: embed
-        });
-      })
-      .catch(console.error); // Send errors to console
-  }
-
-  // Close ticket command
-  if (command == "close") {
-    if (!message.channel.name.startsWith(`ticket-`))
-      return message.channel.send(
-        `You can't use the close command outside of a ticket channel.`
-      );
-    // Confirm delete - with timeout (Not command)
-    message.channel
-      .send(
-        `Are you sure? Once confirmed, you cannot reverse this action!\nTo confirm, type \`?confirm\`. This will time out in 10 seconds and be cancelled.`
-      )
-      .then(m => {
-        message.channel
-          .awaitMessages(response => response.content === "?confirm", {
-            max: 1,
-            time: 10000,
-            errors: ["time"]
-          })
-          .then(collected => {
-            message.channel.delete();
-          })
-          .catch(() => {
-            m.edit("Ticket close timed out, the ticket was not closed.").then(
-              m2 => {
-                m2.delete();
-              },
-              3000
-            );
-          });
-      });
-  }
+fs.readdir("./events/", (err, files) => {
+  if (err) return console.error(err);
+  files.forEach(file => {
+    const event = require(`./events/${file}`);
+    let eventName = file.split(".")[0];
+    client.on(eventName, event.bind(null, client));
+  });
 });
 
-client.on('message', async message => {
-	if (message.author.bot) return;
-  if (!message.content.startsWith(PREFIX)) return;
-  const input = message.content.slice(PREFIX.length).trim();
-  if (!input.length) return;
-  const args = message.content
-    .slice(config.prefix.length)
-    .trim()
-    .split(/ +/g);
-  const command = args.shift().toLowerCase();
+client.commands = new Enmap();
 
-	const serverQueue = queue.get(message.guild.id);
-
-	if (command === ('play')) {
-		execute(message, serverQueue);
-		return;
-	} else if (command === ('skip')) {
-		skip(message, serverQueue);
-		return;
-	} else if (command === ('stop')) {
-		stop(message, serverQueue);
-		return;
-	}
+fs.readdir("./commands/", (err, files) => {
+  if (err) return console.error(err);
+  files.forEach(file => {
+    if (!file.endsWith(".js")) return;
+    // Load the command file itself
+    let props = require(`./commands/${file}`);
+    // Get just the command name from the file name
+    let commandName = file.split(".")[0];
+    console.log(`Attempting to load command ${commandName}`);
+    // Here we simply store the whole thing in the command Enmap. We're not running it right now.
+    client.commands.set(commandName, props);
+  });
 });
 
-async function execute(message, serverQueue) {
-	const args = message.content.split(' ');
-
-	const voiceChannel = message.member.voiceChannel;
-	if (!voiceChannel) return message.channel.send('You need to be in a voice channel to play music!');
-	const permissions = voiceChannel.permissionsFor(message.client.user);
-	if (!permissions.has('CONNECT') || !permissions.has('SPEAK')) {
-		return message.channel.send('I need the permissions to join and speak in your voice channel!');
-	}
-
-	const songInfo = await ytdl.getInfo(args[1]);
-	const song = {
-		title: songInfo.title,
-		url: songInfo.video_url,
-	};
-
-	if (!serverQueue) {
-		const queueContruct = {
-			textChannel: message.channel,
-			voiceChannel: voiceChannel,
-			connection: null,
-			songs: [],
-			volume: 5,
-			playing: true,
-		};
-
-		queue.set(message.guild.id, queueContruct);
-
-		queueContruct.songs.push(song);
-
-		try {
-			var connection = await voiceChannel.join();
-			queueContruct.connection = connection;
-			play(message.guild, queueContruct.songs[0]);
-		} catch (err) {
-			console.log(err);
-			queue.delete(message.guild.id);
-			return message.channel.send(err);
-		}
-	} else {
-		serverQueue.songs.push(song);
-		console.log(serverQueue.songs);
-		return message.channel.send(`${song.title} has been added to the queue!`);
-	}
-
-}
-
-function skip(message, serverQueue) {
-	if (!message.member.voiceChannel) return message.channel.send('You have to be in a voice channel to stop the music!');
-	if (!serverQueue) return message.channel.send('There is no song that I could skip!');
-	serverQueue.connection.dispatcher.end();
-}
-
-function stop(message, serverQueue) {
-	if (!message.member.voiceChannel) return message.channel.send('You have to be in a voice channel to stop the music!');
-	serverQueue.songs = [];
-	serverQueue.connection.dispatcher.end();
-}
-
-function play(guild, song) {
-	const serverQueue = queue.get(guild.id);
-
-	if (!song) {
-		serverQueue.voiceChannel.leave();
-		queue.delete(guild.id);
-		return;
-	}
-
-	const dispatcher = serverQueue.connection.playStream(ytdl(song.url))
-		.on('end', () => {
-			console.log('Music ended!');
-			serverQueue.songs.shift();
-			play(guild, serverQueue.songs[0]);
-		})
-		.on('error', error => {
-			console.error(error);
-		});
-	dispatcher.setVolumeLogarithmic(serverQueue.volume / 5);
-}
-
-client.login(process.env.TOKEN1).catch(console.error);
+client.login(config.token)
